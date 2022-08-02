@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"PrometheusAlert/models"
+
 	"github.com/astaxie/beego"
 )
 
@@ -13,6 +14,7 @@ type DashboardJson struct {
 	Alydh           int `json:"alydh"`
 	Bdydx           int `json:"bdydx"`
 	Bark            int `json:"bark"`
+	Bkalert         int `json:"bkalert"`
 	Dingding        int `json:"dingding"`
 	Email           int `json:"email"`
 	Feishu          int `json:"feishu"`

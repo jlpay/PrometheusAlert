@@ -73,6 +73,7 @@
 					<option value="wx" {{if eq .Template.Tpltype "wx"}}selected="selected"{{end}}>企业微信</option>
 					<option value="workwechat" {{if eq .Template.Tpltype "workwechat"}}selected="selected"{{end}}>企业微信应用</option>
 					<option value="fs" {{if eq .Template.Tpltype "fs"}}selected="selected"{{end}}>飞书</option>
+					<option value="bkalert">蓝鲸告警</option>
 					<option value="webhook" {{if eq .Template.Tpltype "webhook"}}selected="selected"{{end}}>WebHook</option>
 					<option value="txdx" {{if eq .Template.Tpltype "txdx"}}selected="selected"{{end}}>腾讯云短信</option>
 					<option value="txdh" {{if eq .Template.Tpltype "txdh"}}selected="selected"{{end}}>腾讯云电话</option>
@@ -238,6 +239,11 @@ function typeChange(){
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+ } else if(typeSelect=="bkalert"){
+	typeStr.innerText="Bkurl地址";
+	document.getElementById("Pat").style.display="none";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
  } else if(typeSelect=="webhook"){
 	typeStr.innerText="webhook地址";
 	document.getElementById("Purl").style.display="";
@@ -319,6 +325,8 @@ function sendtest(){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value+'&at='+upat.value;
 	} else if(utype.value=="fsapp"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&at='+upat.value;
+	} else if(utype.value=="bkalert"){
+	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&bkurl='+upurl.value;
 	} else if(utype.value=="webhook"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value;
 	} else if(utype.value=="email"){

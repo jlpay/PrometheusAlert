@@ -246,6 +246,12 @@ function typeChange(){
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+ } else if(tpltype.value=="bkalert"){
+	typeStr.innerText="bkurl地址(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
+	document.getElementById("Pat").style.display="none";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="webhook"){
 	typeStr.innerText="webhook地址(多个请以,隔开)";
 	document.getElementById("Purl").style.display="";

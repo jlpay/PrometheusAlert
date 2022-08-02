@@ -5,14 +5,15 @@ import (
 	"PrometheusAlert/models/elastic"
 	"bytes"
 	"encoding/json"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	tmplhtml "html/template"
 	"regexp"
 	"strconv"
 	"strings"
 	"text/template"
 	"time"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 type PrometheusAlertController struct {
@@ -58,12 +59,14 @@ type AliyunAlert struct {
 }
 
 type PrometheusAlertMsg struct {
-	Tpl        string
-	Type       string
-	Ddurl      string
-	Wxurl      string
-	Fsurl      string
-	Phone      string
+	Tpl   string
+	Type  string
+	Ddurl string
+	Wxurl string
+	Fsurl string
+	Phone string
+	// 添加bkurl
+	Bkurl      string
 	WebHookUrl string
 	ToUser     string
 	Email      string
@@ -126,6 +129,8 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		pMsg.Fsurl = beego.AppConfig.String("fsurl")
 	}
 	pMsg.WebHookUrl = c.Input().Get("webhookurl")
+	// 添加bkurl
+	pMsg.Bkurl = c.Input().Get("bkurl")
 	pMsg.Phone = c.Input().Get("phone")
 	if pMsg.Phone == "" && (pMsg.Type == "txdx" || pMsg.Type == "hwdx" || pMsg.Type == "bddx" || pMsg.Type == "alydx" || pMsg.Type == "txdh" || pMsg.Type == "alydh" || pMsg.Type == "rlydh" || pMsg.Type == "7moordx" || pMsg.Type == "7moordh") {
 		pMsg.Phone = GetUserPhone(1)
@@ -146,7 +151,6 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	if pMsg.ToTag == "" {
 		pMsg.ToTag = beego.AppConfig.String("WorkWechat_ToTag")
 	}
-	// 企业微信消息类型，text、markdown
 	pMsg.MsgType = c.Input().Get("msgtype")
 	if pMsg.MsgType == "" {
 		pMsg.MsgType = "MarkDown"
@@ -283,6 +287,9 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl 
 			//Webhook渠道
 			case "webhook":
 				PMsg.WebHookUrl = router_value.UrlOrPhone
+				//蓝鲸告警
+			case "bkalert":
+				PMsg.Bkurl = router_value.UrlOrPhone
 			//邮件
 			case "email":
 				PMsg.Email = router_value.UrlOrPhone
@@ -465,6 +472,17 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 		} else {
 			for _, url := range Fsurl {
 				ReturnMsg += PostToFS(Title, message, url, pmsg.AtSomeOne, logsign)
+			}
+		}
+
+		//蓝鲸告警
+	case "bkalert":
+		Bkurl := strings.Split(pmsg.Bkurl, ",")
+		if pmsg.RoundRobin == "true" {
+			ReturnMsg += PostToBkalert(message, DoBalance(Bkurl), logsign)
+		} else {
+			for _, url := range Bkurl {
+				ReturnMsg += PostToBkalert(message, url, logsign)
 			}
 		}
 
