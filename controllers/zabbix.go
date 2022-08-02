@@ -111,7 +111,7 @@ func SendMessageZabbix(message ZabbixMessage, logsign string) string {
 		ret = ret + SendTG(message.ZabbixMessage, logsign)
 	//workwechat
 	case "workwechat":
-		ret = ret + SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"), beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"), message.ZabbixMessage, logsign)
+		ret = ret + SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"), beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"), "markdown", message.ZabbixMessage, logsign)
 	//百度Hi(如流)
 	case "rl":
 		if message.ZabbixTarget == "" {

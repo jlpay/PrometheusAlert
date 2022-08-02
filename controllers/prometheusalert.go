@@ -73,6 +73,8 @@ type PrometheusAlertMsg struct {
 	AtSomeOne  string
 	RoundRobin string
 	Split      string
+	// 添加wx消息type
+	MsgType string
 }
 
 func (c *PrometheusAlertController) PrometheusAlert() {
@@ -143,6 +145,11 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	pMsg.ToTag = c.Input().Get("wxtag")
 	if pMsg.ToTag == "" {
 		pMsg.ToTag = beego.AppConfig.String("WorkWechat_ToTag")
+	}
+	// 企业微信消息类型，text、markdown
+	pMsg.MsgType = c.Input().Get("msgtype")
+	if pMsg.MsgType == "" {
+		pMsg.MsgType = "MarkDown"
 	}
 	pMsg.GroupId = c.Input().Get("groupid")
 	if pMsg.GroupId == "" {
@@ -507,7 +514,7 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 		ReturnMsg += SendTG(message, logsign)
 	// Workwechat
 	case "workwechat":
-		ReturnMsg += SendWorkWechat(pmsg.ToUser, pmsg.ToParty, pmsg.ToTag, message, logsign)
+		ReturnMsg += SendWorkWechat(pmsg.ToUser, pmsg.ToParty, pmsg.ToTag, pmsg.MsgType, message, logsign)
 	//百度Hi(如流)
 	case "rl":
 		ReturnMsg += PostToRuLiu(pmsg.GroupId, message, beego.AppConfig.String("BDRL_URL"), logsign)

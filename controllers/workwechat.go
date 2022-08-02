@@ -11,7 +11,8 @@ import (
 )
 
 // SendWorkWechat 发送微信企业应用消息
-func SendWorkWechat(touser, toparty, totag, msg, logsign string) string {
+// 增加一个消息类型 msg, msg可以是 text 和markdown
+func SendWorkWechat(touser, toparty, totag, msgtype, msg, logsign string) string {
 	open := beego.AppConfig.String("open-workwechat")
 	if open != "1" {
 		logs.Info(logsign, "[workwechat]", "workwechat未配置未开启状态,请先配置open-workwechat为1")
@@ -30,13 +31,27 @@ func SendWorkWechat(touser, toparty, totag, msg, logsign string) string {
 		AgentID:     agentid,
 		AgentSecret: agentsecret,
 	}
-	workwxmsg := workwxbot.Message{
-		ToUser:   touser,
-		ToParty:  toparty,
-		ToTag:    totag,
-		MsgType:  "markdown",
-		Markdown: workwxbot.Content{Content: msg},
+
+	workwxmsg := workwxbot.Message{}
+	if msgtype == "text" {
+		workwxmsg = workwxbot.Message{
+			ToUser:  touser,
+			ToParty: toparty,
+			ToTag:   totag,
+			MsgType: msgtype,
+			Text:    workwxbot.Content{Content: msg},
+		}
+
+	} else {
+		workwxmsg = workwxbot.Message{
+			ToUser:   touser,
+			ToParty:  toparty,
+			ToTag:    totag,
+			MsgType:  msgtype,
+			Markdown: workwxbot.Content{Content: msg},
+		}
 	}
+
 	if err := workwxapi.Send(workwxmsg); err != nil {
 		logs.Error(logsign, "[workwechat]", err.Error())
 	}

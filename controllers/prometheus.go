@@ -330,7 +330,7 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		SendBark(PhoneCallMessage, logsign)
 		SendVoice(PhoneCallMessage, logsign)
 		// 推送消息到企业微信
-		SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"), beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"), wxtext, logsign)
+		SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"), beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"), "markdown", wxtext, logsign)
 
 		// 消息入库
 		//AtTime, _ := time.ParseInLocation("2006-01-02 15:04:05", At, time.Local)
